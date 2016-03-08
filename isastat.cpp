@@ -43,7 +43,7 @@ main(int argc, char **argv) {
               << "\n";
   }
 
-  ISAStat Stats(instr_list);
+  ISAStat Stats(format_ins_list, instr_list);
 
   std::cout << "Model has " << Stats.NumInsns << " instructions.\n";
   acppUnload();

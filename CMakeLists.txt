@@ -3,11 +3,12 @@ project (isastat)
 
 cmake_policy(SET CMP0015 OLD)
 link_directories("../archc-obj/src/acpp/.libs")
+link_directories("../install/lib")
 include_directories("../ArchC/src/acpp")
 include_directories("../install/include")
 
 add_executable(isastat isastat.cpp ISAStat.cpp)
-target_link_libraries(isastat acpp)
+target_link_libraries(isastat acpp archc)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
