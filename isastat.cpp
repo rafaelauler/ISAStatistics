@@ -54,16 +54,22 @@ main(int argc, char **argv) {
 
   std::cout << "Model has " << Stats.ISA->nFields << " fields.\n";
 
-  for (const auto &Field : Stats.Opcodes) {
-    const double Usage =
-        Field.UsedEncodings / (double)Field.PossibleEncodings * 100.0;
-    if (!Field.name)
+  for (uint32_t I = 0, E = Stats.Opcodes.size(); I != E; ++I) {
+    const auto &FieldUsages = Stats.Opcodes[I];
+    if (FieldUsages.size() == 0)
       continue;
-    std::cout << "Field " << Field.name << " usage is: " << Usage << "%\n";
-    std::cout << "\tPayload Bits: " << Field.PayloadBits << "\n";
-    std::cout << "\tPossible encodings: " << Field.PossibleEncodings << "\n";
-    std::cout << "\tUsed encodings: " << Field.UsedEncodings << "\n";
-    std::cout << "---------------------------\n";
+    std::cout << "Field " << Stats.GetFieldName(I) << "\n";
+    for (const auto &Field : FieldUsages) {
+      const double Usage =
+          Field.UsedEncodings / (double)Field.PossibleEncodings * 100.0;
+      std::cout << "\tUsage rate: " << Usage << "%\n";
+      std::cout << "\tPayload Bits: " << Field.PayloadBits << "\n";
+      std::cout << "\tPossible encodings: " << Field.PossibleEncodings << "\n";
+      std::cout << "\tUsed encodings: " << Field.UsedEncodings << "\n";
+      std::cout << "\tFinal encodings: " << Field.FinalEncodings << "\n";
+      std::cout << "\t---------------------------\n";
+    }
+    std::cout << "===========================\n";
   }
 
   acppUnload();
