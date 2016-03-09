@@ -50,10 +50,7 @@ main(int argc, char **argv) {
 
   ISAStat Stats(format_ins_list, instr_list, wordsize);
 
-  std::cout << "Model has " << Stats.NumInsns << " instructions.\n";
-
-  std::cout << "Model has " << Stats.ISA->nFields << " fields.\n";
-
+  std::cout << "\nDecoding tree information:\n\n";
   for (uint32_t I = 0, E = Stats.Opcodes.size(); I != E; ++I) {
     const auto &FieldUsages = Stats.Opcodes[I];
     if (FieldUsages.size() == 0)
@@ -80,17 +77,32 @@ main(int argc, char **argv) {
     }
     std::cout << "===========================\n";
   }
+  std::cout << "\nSummary:\n";
 
+  uint32_t TotalUsage = 0U;
+  uint32_t TotalEncodings = 0U;
   for (uint32_t I = 0, E = Stats.Payloads.size(); I != E; ++I) {
     const auto &Payload = Stats.Payloads[I];
     if (Payload.UsedEncodings == 0)
       continue;
-    std::cout << "Payload: " << I << " bits.\n";
+    std::cout << "\tPayload: " << I << " bits.\n";
     const double Usage =
         Payload.UsedEncodings / (double)Payload.PossibleEncodings * 100.0;
-    std::cout << "\tUsage rate: " << Usage << "%\n";
-    std::cout << "\tPossible encodings: " << Payload.PossibleEncodings << "\n";
-    std::cout << "\tUsed encodings: " << Payload.UsedEncodings << "\n";
+    std::cout << "\t\tUsage rate: " << Usage << "%\n";
+    std::cout << "\t\tPossible encodings: " << Payload.PossibleEncodings << "\n";
+    std::cout << "\t\tUsed encodings: " << Payload.UsedEncodings << "\n";
+    TotalUsage += Payload.UsedEncodings;
+    TotalEncodings += Payload.PossibleEncodings;
+  }
+
+  std::cout << "\nModel has " << Stats.NumInsns << " instructions.\n";
+
+  std::cout << "Model has " << Stats.ISA->nFields << " fields.\n";
+
+  if (TotalUsage > 0U) {
+    const double Usage = TotalUsage / (double)TotalEncodings * 100.0;
+    std::cout << "\nTotal opcode space utilization is " << Usage << "% ("
+              << TotalUsage << " out of " << TotalEncodings << ")\n\n";
   }
 
   acppUnload();
