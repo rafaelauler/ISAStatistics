@@ -43,9 +43,29 @@ main(int argc, char **argv) {
               << "\n";
   }
 
-  ISAStat Stats(format_ins_list, instr_list);
+  if (wordsize == 0) {
+    std::cerr << "Warning: No wordsize defined. Default value is 32 bits.\n";
+    wordsize = 32;
+  }
+
+  ISAStat Stats(format_ins_list, instr_list, wordsize);
 
   std::cout << "Model has " << Stats.NumInsns << " instructions.\n";
+
+  std::cout << "Model has " << Stats.ISA->nFields << " fields.\n";
+
+  for (const auto &Field : Stats.Opcodes) {
+    const double Usage =
+        Field.UsedEncodings / (double)Field.PossibleEncodings * 100.0;
+    if (!Field.name)
+      continue;
+    std::cout << "Field " << Field.name << " usage is: " << Usage << "%\n";
+    std::cout << "\tPayload Bits: " << Field.PayloadBits << "\n";
+    std::cout << "\tPossible encodings: " << Field.PossibleEncodings << "\n";
+    std::cout << "\tUsed encodings: " << Field.UsedEncodings << "\n";
+    std::cout << "---------------------------\n";
+  }
+
   acppUnload();
   return 0;
 }
