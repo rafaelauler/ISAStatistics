@@ -43,7 +43,7 @@ ISAStat::ISAStat(ac_dec_format *FormatList, ac_dec_instr *InstrList,
     Worklist.pop();
     if (Cur->next)
       Worklist.push({Cur->next, Parent});
-    if (Cur->subcheck)
+    if (!Cur->found && Cur->subcheck)
       Worklist.push({Cur->subcheck, Cur});
 
     OpcodeFieldInfo &Opcode = Opcodes[Id];
