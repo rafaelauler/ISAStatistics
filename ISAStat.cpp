@@ -57,32 +57,29 @@ ISAStat::ISAStat(ac_dec_format *FormatList, ac_dec_instr *InstrList,
   };
 
   std::stack<WorklistItem> Worklist;
-  Worklist.push(
-      {ISA->decoder, nullptr,
-       32U - FindDecField(ISA->fields, ISA->decoder->check->id)->size});
+  Worklist.push({ISA->decoder, nullptr, 32U});
 
   while (!Worklist.empty()) {
     WorklistItem WI = Worklist.top();
     ac_decoder *Cur = WI.Item;
     ac_decoder *Parent = WI.Parent;
-    uint32_t PayloadBits = WI.PayloadBits;
     uint32_t Id = Cur->check->id;
+    ac_dec_field *FieldPtr = FindDecField(ISA->fields, Id);
+    uint32_t PayloadBits = WI.PayloadBits - FieldPtr->size;
     uint32_t ParentId = Parent? Parent->check->id : 0;
     Worklist.pop();
 
     // Successors of the DFS
     if (Cur->next) // sibling
-      Worklist.push({Cur->next, Parent, PayloadBits});
+      Worklist.push({Cur->next, Parent, WI.PayloadBits});
     if (!Cur->found && Cur->subcheck) { // child
       ac_dec_field *ChildField =
-        FindDecField(ISA->fields, Cur->subcheck->check->id);
-      uint32_t NewPayloadBits = PayloadBits - ChildField->size;
+          FindDecField(ISA->fields, Cur->subcheck->check->id);
       BumpPossibleEncodings(Cur->subcheck->check->id, Id,
-                            NewPayloadBits);
-      Worklist.push({Cur->subcheck, Cur, NewPayloadBits});
+                            PayloadBits - ChildField->size);
+      Worklist.push({Cur->subcheck, Cur, PayloadBits});
     }
 
-    ac_dec_field *FieldPtr = FindDecField(ISA->fields, Id);
     // Find the entry for the tuple <Field id, Parent id, Used bits>. If it
     // does not exist, create one.
     std::vector<FieldUsage> &FieldUsages = Opcodes[Id];
