@@ -66,8 +66,17 @@ main(int argc, char **argv) {
       std::cout << "\tPayload Bits: " << Field.PayloadBits << "\n";
       std::cout << "\tPossible encodings: " << Field.PossibleEncodings << "\n";
       std::cout << "\tUsed encodings: " << Field.UsedEncodings << "\n";
-      std::cout << "\tFinal encodings: " << Field.FinalEncodings << "\n";
-      std::cout << "\t---------------------------\n";
+      std::cout << "\tFinal encodings: " << Field.FinalEncodings << " ";
+      if (Field.FinalEncodings) {
+        std::cout << "(";
+        auto Sep = "";
+        for (auto &Name : Field.InstrNames) {
+          std::cout << Sep << Name;
+          Sep = ", ";
+        }
+        std::cout << ")";
+      }
+      std::cout << "\n\t---------------------------\n";
     }
     std::cout << "===========================\n";
   }

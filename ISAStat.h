@@ -29,6 +29,8 @@ struct FieldUsage {
   // Number of instructions that use this field as a final check to establish
   // their id
   uint32_t FinalEncodings = {0};
+  // Names of instructions identified by this field as a final check
+  std::vector<const char *> InstrNames;
 };
 
 // Analyzes instructions of an ArchC model parsed by acpp. Supposes acpp is

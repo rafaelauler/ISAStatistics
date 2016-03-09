@@ -93,13 +93,17 @@ ISAStat::ISAStat(ac_dec_format *FormatList, ac_dec_instr *InstrList,
         continue;
       Found = true;
       ++Field.UsedEncodings;
-      if (Cur->found)
+      if (Cur->found) {
         ++Field.FinalEncodings;
+        Field.InstrNames.push_back(Cur->found->name);
+      }
     }
 
     if (!Found) {
       FieldUsages.push_back({ParentId, PayloadBits, 1U << FieldPtr->size, 1,
                              Cur->found ? 1U : 0U});
+      if (Cur->found)
+        FieldUsages.back().InstrNames.push_back(Cur->found->name);
     }
   }
 
