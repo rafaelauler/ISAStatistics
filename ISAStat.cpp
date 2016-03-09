@@ -104,6 +104,15 @@ ISAStat::ISAStat(ac_dec_format *FormatList, ac_dec_instr *InstrList,
     }
   }
 
+  // Aggregate everything by Payload size
+  Payloads.resize(Wordsize);
+  for (const auto &FieldUsages : Opcodes) {
+    for (const auto &Field : FieldUsages) {
+      Payloads[Field.PayloadBits].UsedEncodings += Field.UsedEncodings;
+      Payloads[Field.PayloadBits].PossibleEncodings += Field.PossibleEncodings;
+    }
+  }
+
   for (ac_dec_instr *InstrPtr = InstrList; InstrPtr != nullptr;
        InstrPtr = InstrPtr->next) {
     ++NumInsns;

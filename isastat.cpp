@@ -81,6 +81,18 @@ main(int argc, char **argv) {
     std::cout << "===========================\n";
   }
 
+  for (uint32_t I = 0, E = Stats.Payloads.size(); I != E; ++I) {
+    const auto &Payload = Stats.Payloads[I];
+    if (Payload.UsedEncodings == 0)
+      continue;
+    std::cout << "Payload: " << I << " bits.\n";
+    const double Usage =
+        Payload.UsedEncodings / (double)Payload.PossibleEncodings * 100.0;
+    std::cout << "\tUsage rate: " << Usage << "%\n";
+    std::cout << "\tPossible encodings: " << Payload.PossibleEncodings << "\n";
+    std::cout << "\tUsed encodings: " << Payload.UsedEncodings << "\n";
+  }
+
   acppUnload();
   return 0;
 }
