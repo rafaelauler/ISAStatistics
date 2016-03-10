@@ -44,6 +44,8 @@ public:
   struct PayloadUsage {
     uint32_t PossibleEncodings = {0};
     uint32_t UsedEncodings = {0};
+    uint32_t FinalEncodings = {0};
+    std::vector<const char *> InstrNames;
   };
 
   ISAStat(ac_dec_format *FormatList, ac_dec_instr *InstrList,

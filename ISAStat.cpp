@@ -110,6 +110,10 @@ ISAStat::ISAStat(ac_dec_format *FormatList, ac_dec_instr *InstrList,
     for (const auto &Field : FieldUsages) {
       Payloads[Field.PayloadBits].UsedEncodings += Field.UsedEncodings;
       Payloads[Field.PayloadBits].PossibleEncodings += Field.PossibleEncodings;
+      Payloads[Field.PayloadBits].FinalEncodings += Field.FinalEncodings;
+      Payloads[Field.PayloadBits].InstrNames.insert(
+          Payloads[Field.PayloadBits].InstrNames.end(),
+          Field.InstrNames.begin(), Field.InstrNames.end());
     }
   }
 

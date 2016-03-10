@@ -91,6 +91,18 @@ main(int argc, char **argv) {
     std::cout << "\t\tUsage rate: " << Usage << "%\n";
     std::cout << "\t\tPossible encodings: " << Payload.PossibleEncodings << "\n";
     std::cout << "\t\tUsed encodings: " << Payload.UsedEncodings << "\n";
+    std::cout << "\t\tInstructions with this payload: "
+              << Payload.FinalEncodings << " ";
+    if (Payload.FinalEncodings) {
+      std::cout << "(";
+      auto Sep = "";
+      for (auto &Name : Payload.InstrNames) {
+        std::cout << Sep << Name;
+        Sep = ", ";
+      }
+      std::cout << ")";
+    }
+    std::cout << "\n";
     TotalUsage += Payload.UsedEncodings;
     TotalEncodings += Payload.PossibleEncodings;
   }
